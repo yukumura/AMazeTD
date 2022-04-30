@@ -4,15 +4,18 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab9fbd21fea52b641993ab090dd0c5de, type: 3}
   m_Name: StandardTurret
   m_EditorClassIdentifier: 
-  prefab: {fileID: 1331037956033278, guid: 5722a1adcab083445a73fe3c30c848cf, type: 2}
+  prefab: {fileID: 3887728731888039606, guid: 31f7df6a441bc1a4788220ddbf589007, type: 3}
   cost: 100
-  valueToSell: 20
+  valueToSell: 50
   isUpgradeable: 1
   upgrade: {fileID: 11400000, guid: 5e27bbb2499d25e40857e9a004896993, type: 2}
+  description: "A classic tower that does moderate damage at a moderate distance.
+    \nSingle target."

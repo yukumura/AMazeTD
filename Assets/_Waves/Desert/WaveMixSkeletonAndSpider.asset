@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3a2e9e8ad30cde4fa8c7bf98515ff79, type: 3}
+  m_Name: WaveMixSkeletonAndSpider
+  m_EditorClassIdentifier: 
+  goldBonus: 0
+  wave:
+  - monster: {fileID: 1506724765288326826, guid: 5e3df895633f0f2448cf5a419b28ebf6,
+      type: 3}
+    count: 4
+    rateForSpawn: 0.9
+  - monster: {fileID: 1387384152434612, guid: 701e3f994d8ae154d89f1cab561e084f, type: 3}
+    count: 4
+    rateForSpawn: 0.9
+  - monster: {fileID: 1506724765288326826, guid: 5e3df895633f0f2448cf5a419b28ebf6,
+      type: 3}
+    count: 4
+    rateForSpawn: 0.9
+  - monster: {fileID: 1387384152434612, guid: 701e3f994d8ae154d89f1cab561e084f, type: 3}
+    count: 4
+    rateForSpawn: 0.9
