@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Spawner : MonoBehaviour
 {
-    public Wave[] waves;
+    public WaveDescriptor[] waves;
     public Text secondsToNextWaveText; 
 
     public Transform spawnPoint;
@@ -15,6 +15,7 @@ public class Spawner : MonoBehaviour
 
     private int waveIndex = 0;
     private GameManager gameManager;
+    private bool isSpawning = false;
 
 
     // Use this for initialization
@@ -23,10 +24,12 @@ public class Spawner : MonoBehaviour
         gameManager = GameManager.instance;
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// When the wave monster are all killed, start new wave
+    /// </summary>
     void Update()
     {
-        if (gameManager.GetMonsters() > 0) return;
+        if (gameManager.GetMonsters() > 0 || isSpawning) return;
 
         if(Mathf.Round(startCountdown) <= 0f)
         {
@@ -50,20 +53,27 @@ public class Spawner : MonoBehaviour
 
     IEnumerator SpawnWave()
     {
-        Wave wave = waves[waveIndex];
+        isSpawning = true;
+        WaveDescriptor waveDescriptor = waves[waveIndex];
 
-        for (int i = 0; i < wave.count; i++)
+        foreach (Wave wave in waveDescriptor.wave)
         {
-            SpawnEnemy(wave.monster);
-            yield return new WaitForSeconds(1 / wave.rateForSpawn);
+            for (int i = 0; i < wave.count; i++)
+            {
+                SpawnEnemy(wave.monster);
+                yield return new WaitForSeconds(1 / wave.rateForSpawn);
+            }
         }
-
+       
         waveIndex++;
 
         if(waveIndex >= waves.Length)
         {
             enabled = false;
+            Debug.Log("No other waves. Show You won! message");
         }
+
+        isSpawning = false;
     }
 
     void SpawnEnemy(GameObject monster)
@@ -74,7 +84,16 @@ public class Spawner : MonoBehaviour
             return;
         }
 
-        Instantiate(monster, spawnPoint.position, spawnPoint.rotation);
+        EnemyMovement enemyMovement = monster.GetComponent<EnemyMovement>();
+        if (enemyMovement.isFlyingCreature)
+        {
+            Vector3 spawnCreaturePosition = spawnPoint.position + enemyMovement.FlyPosition;
+            Instantiate(monster, spawnCreaturePosition, spawnPoint.rotation);
+
+        }
+        else
+            Instantiate(monster, spawnPoint.position, spawnPoint.rotation);
+
         gameManager.AddMonster(1);
     }
 }

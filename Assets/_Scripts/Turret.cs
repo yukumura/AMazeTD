@@ -5,7 +5,9 @@ using UnityEngine;
 
 public class Turret : MonoBehaviour
 {
-    public int HP;
+    public float health = 100f;
+    public bool IsDead;
+    public GameObject deathEffect;
 
     private Transform target;
     private Enemy targetEnemy;
@@ -14,6 +16,7 @@ public class Turret : MonoBehaviour
 
     [Header("General")]
     public float range = 15f;
+    public bool IsAttacked = false;
 
     [Header("Animation to Attack")]
     public bool animToAttack;
@@ -50,6 +53,7 @@ public class Turret : MonoBehaviour
     {
         if (target == null)
         {
+            //Turn off laser
             if (useLaser)
             {
                 if (lineRenderer.enabled)
@@ -71,9 +75,9 @@ public class Turret : MonoBehaviour
         {
             if (fireCountdown <= 0f)
             {
-                if(animToAttack)
+                if (animToAttack)
                 {
-                    anim.Play(animToAttackName);                   
+                    anim.Play(animToAttackName);
                 }
                 else
                 {
@@ -88,6 +92,7 @@ public class Turret : MonoBehaviour
 
     }
 
+    //If the turret use laser, use laser effects + make damage over time
     private void Laser()
     {
         targetEnemy.TakeDamage(damageOverTime * Time.deltaTime);
@@ -95,7 +100,7 @@ public class Turret : MonoBehaviour
         if (!lineRenderer.enabled)
         {
             lineRenderer.enabled = true;
-            impactEffect.Play();            
+            impactEffect.Play();
         }
 
         lineRenderer.SetPosition(0, firePoint.position);
@@ -107,6 +112,9 @@ public class Turret : MonoBehaviour
         impactEffect.transform.rotation = Quaternion.LookRotation(dir);
     }
 
+    /// <summary>
+    /// If the turret isn't a laser, shoot
+    /// </summary>
     private void Shoot()
     {
         GameObject bulletGO = Instantiate(bulltetPrefab, firePoint.position, firePoint.rotation);
@@ -124,8 +132,11 @@ public class Turret : MonoBehaviour
         partToRotate.rotation = Quaternion.Euler(0f, rotation.y, 0f);
     }
 
+    /// <summary>
+    /// Check nearby enemy to shot / laser
+    /// </summary>
     void UpdateTarget()
-    {        
+    {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag(enemyTag);
         float shortestDistance = Mathf.Infinity;
         GameObject nearestEnemy = null;
@@ -135,14 +146,14 @@ public class Turret : MonoBehaviour
             if (enemy.GetComponent<Enemy>().IsDead) continue;
 
             float distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
-            if(distanceToEnemy < shortestDistance)
+            if (distanceToEnemy < shortestDistance)
             {
                 shortestDistance = distanceToEnemy;
                 nearestEnemy = enemy;
             }
         }
 
-        if(nearestEnemy != null && shortestDistance <= range)
+        if (nearestEnemy != null && shortestDistance <= range)
         {
             target = nearestEnemy.transform;
             targetEnemy = target.GetComponent<Enemy>();
@@ -151,6 +162,31 @@ public class Turret : MonoBehaviour
         {
             target = null;
         }
+    }
+
+    public void TakeDamage(float amount)
+    {
+        health -= amount;
+
+        if (health <= 0)
+        {
+            Die();
+        }
+    }
+    private void Die()
+    {
+        IsDead = true;
+
+        if (deathEffect != null)
+        {
+            GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
+            Destroy(effect, 5f);
+        }
+
+        if (gameObject.transform.parent != null)
+            Destroy(gameObject.transform.parent.gameObject);
+        else
+            Destroy(gameObject);
     }
 
     private void OnDrawGizmosSelected()

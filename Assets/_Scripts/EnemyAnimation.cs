@@ -25,19 +25,9 @@ public class EnemyAnimation : MonoBehaviour
 
     public void PlayAttack()
     {
-        int random = Random.Range(1, 3);
-        switch (random)
-        {
-            case 1:
-                Debug.Log("Attack");
-                anim.SetTrigger("Attack");
-                break;
+        anim.SetBool("Walk", false);
+        anim.SetBool("Attack", true);
 
-            case 2:
-                Debug.Log("Attack_02");
-                anim.SetTrigger("Attack_02");
-                break;
-        }
     }
 
     public void PlayIdle()
@@ -47,8 +37,8 @@ public class EnemyAnimation : MonoBehaviour
 
     public void PlayWalk()
     {
-        Debug.Log("Walk");
         anim.SetBool("Walk", true);
+        anim.SetBool("Attack", false);
     }
 
     public void PlayStun()

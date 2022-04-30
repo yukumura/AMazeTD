@@ -12,6 +12,10 @@ public class Bullet : MonoBehaviour
     public float explosionRadius = 0f;
     public GameObject impactEffect;
 
+    /// <summary>
+    /// Seek target
+    /// </summary>
+    /// <param name="_target"></param>
     public void Seek(Transform _target)
     {
         target = _target;
@@ -23,7 +27,9 @@ public class Bullet : MonoBehaviour
 
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Reach object on time
+    /// </summary>
     void Update()
     {
         if(target == null)
@@ -45,6 +51,9 @@ public class Bullet : MonoBehaviour
         transform.LookAt(target);
     }
 
+    /// <summary>
+    /// When projectile hit the target
+    /// </summary>
     private void HitTarget()
     {
         if(impactEffect != null)
@@ -65,6 +74,9 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject);
     }
 
+    /// <summary>
+    /// When the bullet make radius damage
+    /// </summary>
     private void Explode()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, explosionRadius);
@@ -78,6 +90,10 @@ public class Bullet : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Call Enemy TakeDamage method
+    /// </summary>
+    /// <param name="enemyGO">Enemy Game Object</param>
     void Damage(Transform enemyGO)
     {
         Enemy enemy = enemyGO.GetComponent<Enemy>();
@@ -86,6 +102,9 @@ public class Bullet : MonoBehaviour
             enemy.TakeDamage(damage);
     }
 
+    /// <summary>
+    /// UI Radius
+    /// </summary>
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;

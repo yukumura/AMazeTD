@@ -31,6 +31,7 @@ public class ManageObject : MonoBehaviour
        
     }
 
+    //Call tile sell object method
     public void SellObject()
     {
         if (gameManager.GetTileSelected() == null) return;
@@ -39,6 +40,7 @@ public class ManageObject : MonoBehaviour
         gameManager.DeselectTile();
     }
 
+    //Call tile upgrade object method
     public void UpgradeObject()
     {
         if (gameManager.GetTileSelected() == null) return;
@@ -48,6 +50,9 @@ public class ManageObject : MonoBehaviour
         gameManager.DeselectTile();
     }
 
+    /// <summary>
+    /// Check if can upgrade turret + update sell turret cost 
+    /// </summary>
     public void UpdateInformationButton()
     {
         if (gameManager.GetTileSelected() == null || gameManager.GetTileSelected().GetBuilding() == null)

@@ -1,106 +1,64 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
-
-    public float health = 100f;
+    [Header("Current Status")]
+    public float startHealth = 100f;
+    private float health;
     public int value = 50;
 
+    [Header("Death stuff")]
     public GameObject deathEffect;
-    public string deathAnimation;
-
     public bool IsDead;
+
+    [Header("Health stuff")]
+    public Slider healthSlider;
+    public Image healthImage;
+    public Color FullHealthColor = Color.green;
+    public Color MidHealthColor = Color.yellow;
+    public Color ZeroHealthColor = Color.red;
 
     [Header("Attack variables")]
     public Transform target;
-    public float range = 1f;
+    public float rangeDetect = 2f;
+    public float rangeAttack = 1f;
     public float attackRate = 1f;
     public float attackCountdown = 0f;
     public float turnSpeed = 10f;
-    public string objectsTag;
     public bool isAttacking = false;
     public bool targetReached = false;
     public float damage;
 
     private GameManager gameManager;
-    //private EnemyMovement enemyMovement;
+    private EnemyMovement enemyMovement;
     private EnemyAnimation enemyAnimation;
-
-    [Header("Movement variables")]
-
-    //try to move enemy movement here
-    public GameObject GoalPosition;
-    private NavMeshAgent myNavMeshAgent;
-    private Enemy enemy;
-
 
     // Use this for initialization
     void Start()
     {
+        health = startHealth;
         gameManager = GameManager.instance;
 
         enemyAnimation = GetComponent<EnemyAnimation>();
-        //enemyMovement = GetComponent<EnemyMovement>();
-
-        //try to move enemy movement here
-        myNavMeshAgent = GetComponent<NavMeshAgent>();
-        enemy = GetComponent<Enemy>();
-        enemyAnimation = GetComponent<EnemyAnimation>();
-        SetGoalDestination();
+        enemyMovement = GetComponent<EnemyMovement>();
     }
 
     // Update is called once per frame
     void Update()
-    {
-        //try to move enemy movement here
-        Debug.Log("is stopped: " + myNavMeshAgent.isStopped);
-        if (enemy.IsDead)
-        {
-            myNavMeshAgent.enabled = false;
-        }
-
-        NavMeshPath path = new NavMeshPath();
-        myNavMeshAgent.CalculatePath(GoalPosition.transform.position, path);
-
-        switch (path.status)
-        {
-            case NavMeshPathStatus.PathComplete:
-                ReachGoalDestination();
-                break;
-            case NavMeshPathStatus.PathPartial:
-                Debug.Log("Warning: path cannot reach destination");
-                enemy.FindNearEnemy();
-                break;
-            case NavMeshPathStatus.PathInvalid:
-                break;
-        }
-    }
-
-    public void ReachDestination(Vector3 pos)
-    {
-        myNavMeshAgent.isStopped = false;
-        enemyAnimation.PlayWalk();
-        myNavMeshAgent.SetDestination(pos);
-    }
-
-    public void SetGoalDestination()
-    {
-        GoalPosition = GameObject.FindGameObjectWithTag("Goal");
-        ReachGoalDestination();
-    }
-
-    public void ReachGoalDestination()
-    {
-        ReachDestination(GoalPosition.transform.position);
+    {        
     }
 
     public void TakeDamage(float amount)
     {
         health -= amount;
+
+        SetHealthUI();
 
         if (health <= 0)
         {
@@ -108,10 +66,32 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    private void SetHealthUI()
+    {
+        healthSlider.value = health / startHealth;
+        healthImage.color = healthSlider.value > .8f ? FullHealthColor : healthSlider.value < .4 ? ZeroHealthColor : MidHealthColor;
+    }
+
     private void Die()
     {
-        IsDead = true;
+        healthSlider.transform.parent.gameObject.SetActive(false);
+        enemyAnimation.PlayDead();
 
+        if (!enemyMovement.isFlyingCreature)
+        {
+            enemyMovement.StopMoving();
+            GetComponent<MeshCollider>().enabled = false;
+            GetComponent<BoxCollider>().enabled = false;
+        }
+        else
+        {
+            Rigidbody rb = GetComponent<Rigidbody>();
+            rb.useGravity = true;
+            rb.constraints = RigidbodyConstraints.None;
+        }
+
+        
+        IsDead = true;
         gameManager.AddGold(value);
         gameManager.AddMonster(-1);
 
@@ -121,9 +101,20 @@ public class Enemy : MonoBehaviour
             Destroy(effect, 5f);
         }
 
-        if (!string.IsNullOrEmpty(deathAnimation))
+
+        if(target != null)
         {
-            enemyAnimation.PlayDead();
+            Wall wall = target.GetComponent<Wall>();
+            if (wall != null)
+            {
+                wall.IsAttacked = false;
+            }
+
+            Turret turret = target.GetComponent<Turret>();
+            if (turret != null)
+            {
+                turret.IsAttacked = false;
+            }
         }
 
         Destroy(gameObject, 5f);
@@ -131,7 +122,9 @@ public class Enemy : MonoBehaviour
 
     public void FindNearEnemy()
     {
-        FindTarget();
+        //trovare metodo per bindare un target e fare in modo che gli altri nemici puntino altri punti
+        //if(target == null)
+            FindTarget();
 
         if (target == null)
         {
@@ -139,50 +132,17 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            //enemyMovement.SetTarget(target.position);
-
-            enemyMovement.StopMoving();
-            AimTarget();
-            Attack();
-
-            //if (enemyMovement.IsReachDestination())
-            //{
-                
-            //}
-            //else
-            //{
-            //    enemyMovement.ReachDestination(target.position);
-            //}
-
-
-
-            //if (!enemyMovement.IsMoving() && !enemyMovement.IsReachDestination())
-            //    enemyMovement.ReachDestination(target.position);
-
-            //if (enemyMovement.IsReachDestination())                           
-        }
-        //if (target == null)
-        //{
-        //    Debug.Log("target is null");
-        //    isAttacking = false;
-        //    targetReached = false;
-        //    enemyMovement.ReachGoalDestination();
-        //    return;
-        //}
-
-        //if (enemyMovement.IsReachDestination() && !targetReached)
-        //{
-        //    targetReached = true;
-        //    enemyMovement.SetDestination(transform.position);
-        //    Debug.Log("enemy reached");
-        //    AimTarget();
-        //    Attack();
-        //}
-        //else
-        //{
-        //    Debug.Log("target is far away. try to reach it");
-        //    enemyMovement.SetDestination(target.position);
-        //}                
+            if (enemyMovement.InRange(target.position))
+            {                
+                enemyMovement.StopMoving();
+                AimTarget();
+                Attack();
+            }
+            else
+            {
+                enemyMovement.SetDestination(target.position);
+            }
+        }                   
     }
 
     private void Attack()
@@ -210,13 +170,14 @@ public class Enemy : MonoBehaviour
         Turret turret = target.GetComponent<Turret>();
         if (turret != null)
         {
-
+            turret.TakeDamage(damage);
         }
     }
 
     void FindTarget()
-    {
-        GameObject[] objects = GameObject.FindGameObjectsWithTag(objectsTag);
+    {        
+        GameObject[] objects = GameObject.FindGameObjectsWithTag("Wall").Union(GameObject.FindGameObjectsWithTag("Turret")).ToArray();
+
         float shortestDistance = Mathf.Infinity;
         GameObject nearestObject = null;
 
@@ -230,7 +191,7 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        if (nearestObject != null && shortestDistance <= range)
+        if (nearestObject != null && shortestDistance <= rangeDetect)
         {
             target = nearestObject.transform;
         }
@@ -239,7 +200,6 @@ public class Enemy : MonoBehaviour
             target = null;
         }
     }
-
 
     private void AimTarget()
     {
@@ -252,8 +212,6 @@ public class Enemy : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, range);
+        Gizmos.DrawWireSphere(transform.position, rangeDetect);
     }
-
-
 }

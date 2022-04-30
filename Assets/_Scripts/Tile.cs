@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-
     public Color selectedColor;
     private Renderer rend;
     private Color startColor;
@@ -25,6 +24,10 @@ public class Tile : MonoBehaviour
         gameManager = GameManager.instance;
     }
 
+    /// <summary>
+    /// Retrieve the position for build objects
+    /// </summary>
+    /// <returns></returns>
     public Vector3 GetBuildPosition()
     {
         return transform.position + positionOffset;
@@ -36,11 +39,17 @@ public class Tile : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Highlight tile when selected
+    /// </summary>
     public void Activate()
     {
         rend.material.color = selectedColor;
     }
 
+    /// <summary>
+    /// Unselect the tile
+    /// </summary>
     public void DeActivate()
     {
         rend.material.color = startColor;
@@ -49,6 +58,7 @@ public class Tile : MonoBehaviour
     /// <summary>
     /// Add Turret / Wall and set the tile as parent
     /// </summary>
+    /// <param name="obj">Object to build</param>
     public void Build(ObjectBlueprint obj)
     {
         if (gameManager.GetGolds() < obj.cost)
@@ -64,6 +74,9 @@ public class Tile : MonoBehaviour
         building = bld;
     }
 
+    /// <summary>
+    /// Upgrade the tile object 
+    /// </summary>
     public void UpgradeObject()
     {
         ObjectBlueprint buildingUpdate = buildingBlueprint.upgrade;
@@ -82,6 +95,9 @@ public class Tile : MonoBehaviour
         buildingBlueprint = buildingUpdate;
     }
 
+    /// <summary>
+    /// Sell the tile object
+    /// </summary>
     public void SellObject()
     {
         gameManager.AddGold(buildingBlueprint.valueToSell);
@@ -90,6 +106,10 @@ public class Tile : MonoBehaviour
         buildingBlueprint = null;
     }
 
+    /// <summary>
+    /// Get the tile object
+    /// </summary>
+    /// <returns></returns>
     public ObjectBlueprint GetBuilding()
     {
         return buildingBlueprint;

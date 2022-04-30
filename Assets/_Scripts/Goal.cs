@@ -9,6 +9,10 @@ public class Goal : MonoBehaviour
     public Vector3 positionOffset;
     private GameManager gameManager;
 
+    /// <summary>
+    /// Get position for instantiate death particle effect
+    /// </summary>
+    /// <returns></returns>
     public Vector3 GetBuildPosition()
     {
         return transform.position + positionOffset;

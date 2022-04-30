@@ -28,6 +28,9 @@ public class PanelStats : MonoBehaviour
         UpdateInformation();
     }
 
+    /// <summary>
+    /// Update information related to generic information
+    /// </summary>
     public void UpdateInformation()
     {
         TextMonster.text = gameManager.GetMonsters().ToString();

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Object", menuName = "Object for TD")]
+///Wall or Turret descriptor
 public class ObjectBlueprint : ScriptableObject
 {
     public GameObject prefab;

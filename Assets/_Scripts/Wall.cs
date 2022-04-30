@@ -6,6 +6,7 @@ public class Wall : MonoBehaviour
 {
     public float health = 100f;
     public bool IsDead;
+    public bool IsAttacked = false;
     public GameObject deathEffect;
 
     // Use this for initialization

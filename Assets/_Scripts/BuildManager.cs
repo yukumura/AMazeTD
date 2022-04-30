@@ -26,11 +26,6 @@ public class BuildManager : MonoBehaviour
         objectToBuild = obj;
     }
 
-    //public ObjectBlueprint GetTurretToBuild()
-    //{
-    //    return objectToBuild;
-    //}
-
     public bool CanBuild { get { return objectToBuild != null; } }
 
     public void BuildObjectOn(Tile tile)

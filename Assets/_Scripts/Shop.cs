@@ -31,6 +31,9 @@ public class Shop : MonoBehaviour
         UpdateInformationButtons();
     }
 
+    /// <summary>
+    /// UI method for select objects
+    /// </summary>
     public void SelectStandardTurret()
     {
         buildManager.SelectTurretToBuild(standardTurret);
@@ -38,6 +41,9 @@ public class Shop : MonoBehaviour
         gameManager.DeselectTile();
     }
 
+    /// <summary>
+    /// UI method for select objects
+    /// </summary>
     public void SelectRockTurret()
     {
         buildManager.SelectTurretToBuild(rockTurret);
@@ -45,6 +51,9 @@ public class Shop : MonoBehaviour
         gameManager.DeselectTile();
     }
 
+    /// <summary>
+    /// UI method for select objects
+    /// </summary>
     public void SelectStandardWall()
     {
         buildManager.SelectTurretToBuild(standardWall);
@@ -52,6 +61,9 @@ public class Shop : MonoBehaviour
         gameManager.DeselectTile();
     }
 
+    /// <summary>
+    /// Update information related to player gold
+    /// </summary>
     public void UpdateInformationButtons()
     {
         if (gameManager.GetGolds() < standardTurret.cost)

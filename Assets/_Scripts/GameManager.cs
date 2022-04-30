@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        ///Todo: Input touch for mobile
         if (Input.GetMouseButtonDown(0))
         {
             if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
@@ -83,7 +84,7 @@ public class GameManager : MonoBehaviour
             }            
         }
     }
-       
+    
     public void SelectTile(Tile tile)
     {
         tileSelected = tile;
@@ -107,16 +108,28 @@ public class GameManager : MonoBehaviour
         panelManage.SetActive(false);
     }
 
+    /// <summary>
+    /// Add monster in counter
+    /// </summary>
+    /// <param name="monster"></param>
     public void AddMonster(int monster)
     {
         MonsterInGame += monster;
     }
 
+    /// <summary>
+    /// Add gold in counter
+    /// </summary>
+    /// <param name="gold"></param>
     public void AddGold(int gold)
     {
         Gold += gold;
     }
 
+    /// <summary>
+    /// Add live in counter
+    /// </summary>
+    /// <param name="live"></param>
     public void AddLives(int live)
     {
         Lives += live;
